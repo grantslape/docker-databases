@@ -1,7 +1,3 @@
-CREATE DATABASE IF NOT EXISTS sales;
-
-USE sales;
-
 CREATE TABLE IF NOT EXISTS RETAIL_ORDER (
   OrderNumber int not null,
   StoreNumber int not null,
@@ -12,7 +8,7 @@ CREATE TABLE IF NOT EXISTS RETAIL_ORDER (
   PRIMARY KEY (OrderNumber)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS sku_data (
+CREATE TABLE IF NOT EXISTS SKU_DATA (
   SKU int not null,
   SKU_Description char(35) not null,
   Department char(30) not null,
@@ -20,17 +16,16 @@ CREATE TABLE IF NOT EXISTS sku_data (
   PRIMARY KEY (SKU)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS order_item (
+CREATE TABLE IF NOT EXISTS ORDER_ITEM (
   OrderNumber int not null,
   SKU int not null,
   Quantity int not null,
   Price decimal(15,2) not null,
   ExtendedPrice decimal(15,2) not null,
-  CONSTRAINT order_itemfk_1 FOREIGN KEY (OrderNumber) REFERENCES retail_order(OrderNumber) 
-  ON DELETE CASCADE 
+  CONSTRAINT order_itemfk_1 FOREIGN KEY (OrderNumber) REFERENCES RETAIL_ORDER(OrderNumber)
+  ON DELETE CASCADE
   ON UPDATE CASCADE,
-  CONSTRAINT order_itemfk_2 FOREIGN KEY (SKU) REFERENCES  sku_data(SKU) 
+  CONSTRAINT order_itemfk_2 FOREIGN KEY (SKU) REFERENCES  SKU_DATA(SKU)
   ON DELETE CASCADE
   ON UPDATE CASCADE
 ) ENGINE = INNODB;
-
