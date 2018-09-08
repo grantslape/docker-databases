@@ -1,0 +1,31 @@
+version: "3.5"
+
+networks:
+  backend:
+    driver: bridge
+
+services:
+
+  mysql-data:
+    image: mysql:latest
+    ports:
+      - "39001:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: grant
+      MYSQL_PASSWORD: root
+    networks:
+      backend:
+        aliases:
+          - db-class-mysql
+
+  postgres-data:
+    image: postgres:11
+    ports:
+      - "39002:5432"
+    environment:
+      POSTGRES_PASSWORD: root
+    networks:
+      backend:
+        aliases:
+          - db-class-postgres
