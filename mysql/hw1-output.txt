@@ -1,0 +1,64 @@
+sql> create schema sales
+[2018-09-08 20:28:20] 1 row affected in 9 ms
+sql> use sales
+[2018-09-08 20:28:20] completed in 4 ms
+sql> CREATE TABLE RETAIL_ORDER (
+       OrderNumber int not null,
+       StoreNumber int not null,
+       StoreZIP char(9) not null,
+       OrderMonth char(12) not null,
+       OrderYear int not null,
+       OrderTotal decimal(15,2) not null,
+       PRIMARY KEY (OrderNumber)
+     ) ENGINE = INNODB
+[2018-09-08 20:28:23] completed in 121 ms
+sql> CREATE TABLE SKU_DATA (
+       SKU int not null,
+       SKU_Description char(35) not null,
+       Department char(30) not null,
+       Buyer char(30),
+       PRIMARY KEY (SKU)
+     ) ENGINE = INNODB
+[2018-09-08 20:28:24] completed in 76 ms
+sql> CREATE TABLE ORDER_ITEM (
+       OrderNumber int not null,
+       SKU int not null,
+       Quantity int not null,
+       Price decimal(15,2) not null,
+       ExtendedPrice decimal(15,2) not null,
+       PRIMARY KEY (OrderNumber, SKU),
+       CONSTRAINT order_itemfk_1 FOREIGN KEY (OrderNumber) REFERENCES RETAIL_ORDER(OrderNumber)
+       ON DELETE CASCADE
+       ON UPDATE CASCADE,
+       CONSTRAINT order_itemfk_2 FOREIGN KEY (SKU) REFERENCES  SKU_DATA(SKU)
+       ON DELETE CASCADE
+       ON UPDATE CASCADE
+     ) ENGINE = INNODB
+[2018-09-08 20:28:24] completed in 66 ms
+sql> INSERT INTO RETAIL_ORDER
+            (OrderNumber, StoreNumber, StoreZIP, OrderMonth, OrderYear, OrderTotal)
+     VALUES (1000, 10, '98110', 'December', 2012, 445.00),
+            (2000, 20, '02335', 'December', 2012, 310.00),
+            (3000, 10, '98110', 'January', 2013, 480.00)
+[2018-09-08 20:28:31] 3 rows affected in 110 ms
+sql> INSERT INTO SKU_DATA
+            (SKU, SKU_Description, Department, Buyer)
+     VALUES (100100, 'Std. Scuba Tank, Yellow', 'Water Sports', 'Pete Hansen'),
+            (100200, 'Std. Scuba Tank, Magenta', 'Water Sports', 'Pete Hansen'),
+            (101100, 'Dive Mask, Small Clear', 'Water Sports', 'Nancy Meyers'),
+            (101200, 'Dive Mask, Med Clear', 'Water Sports', 'Nancy Meyers'),
+            (201000, 'Half-dome Tent', 'Camping', 'Cindy Lo'),
+            (202000, 'Half-dome Tent Vestibule', 'Camping', 'Cindy Lo'),
+            (301000, 'Light Fly Climbing Harness', 'Climbing', 'Jerry Martin'),
+            (302000, 'Locking Carabiner, Oval', 'Climbing', 'Jerry Martin')
+[2018-09-08 20:28:31] 8 rows affected in 23 ms
+sql> INSERT INTO ORDER_ITEM
+         (OrderNumber, SKU, Quantity, Price, ExtendedPrice)
+      VALUES (1000, 201000, 1, 300.00, 300.00),
+             (1000, 202000, 1, 130.00, 130.00),
+             (2000, 101100, 4, 50.00, 200.00),
+             (2000, 101200, 2, 50.00, 100.00),
+             (3000, 100200, 1, 300.00, 300.00),
+             (3000, 101100, 2, 50.00, 100.00),
+             (3000, 101200, 1, 50.00, 50.00)
+[2018-09-08 20:28:31] 7 rows affected in 18 ms

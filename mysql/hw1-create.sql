@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS RETAIL_ORDER (
+CREATE TABLE RETAIL_ORDER (
   OrderNumber int not null,
   StoreNumber int not null,
   StoreZIP char(9) not null,
@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS RETAIL_ORDER (
   PRIMARY KEY (OrderNumber)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS SKU_DATA (
+CREATE TABLE SKU_DATA (
   SKU int not null,
   SKU_Description char(35) not null,
   Department char(30) not null,
@@ -16,12 +16,13 @@ CREATE TABLE IF NOT EXISTS SKU_DATA (
   PRIMARY KEY (SKU)
 ) ENGINE = INNODB;
 
-CREATE TABLE IF NOT EXISTS ORDER_ITEM (
+CREATE TABLE ORDER_ITEM (
   OrderNumber int not null,
   SKU int not null,
   Quantity int not null,
   Price decimal(15,2) not null,
   ExtendedPrice decimal(15,2) not null,
+  PRIMARY KEY (OrderNumber, SKU),
   CONSTRAINT order_itemfk_1 FOREIGN KEY (OrderNumber) REFERENCES RETAIL_ORDER(OrderNumber)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
