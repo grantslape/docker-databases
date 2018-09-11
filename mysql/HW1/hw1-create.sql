@@ -12,8 +12,9 @@ CREATE TABLE SKU_DATA (
   SKU int not null,
   SKU_Description char(35) not null,
   Department char(30) not null,
-  Buyer char(30),
-  PRIMARY KEY (SKU)
+  Buyer char(30) not null,
+  PRIMARY KEY (SKU),
+  CONSTRAINT sku_datafk_1 FOREIGN KEY (Buyer) REFERENCES BUYER(BuyerName)
 ) ENGINE = INNODB;
 
 CREATE TABLE ORDER_ITEM (
