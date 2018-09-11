@@ -38,7 +38,7 @@ ORDER BY DateOnWebSite ASC, CatalogPage ASC;
  * All order totals summed by zip code.
  */
 SELECT StoreZIP,
-       sum(OrderTotal) as "order_total"
+       sum(OrderTotal) AS "order_total"
 FROM RETAIL_ORDER
 GROUP BY StoreZIP;
 
@@ -48,7 +48,7 @@ GROUP BY StoreZIP;
  * Only for Orders greater than $400 in value
  */
 SELECT OrderNumber,
-       sum(ExtendedPrice) as "total_sales"
+       sum(ExtendedPrice) AS "total_sales"
 FROM ORDER_ITEM
 GROUP BY OrderNumber
 HAVING total_sales > 400;
@@ -64,15 +64,15 @@ SELECT sku.SKU,
        cat.CatalogPage,
        cat.DateOnWebSite
 FROM CATALOG_SKU_2018 cat
-INNER JOIN SKU_DATA sku on cat.SKU = sku.SKU
-where cat.Department = 'Water Sports';
+INNER JOIN SKU_DATA sku ON cat.SKU = sku.SKU
+WHERE cat.Department = 'Water Sports';
 
 /*
  * TWO TABLES BY GROUPING
  * Get all SKUs sold by each buyer in one column
  */
 SELECT b.BuyerName,
-       group_concat(s.SKU_Description SEPARATOR '; ') as "item_list"
+       GROUP_CONCAT(s.SKU_Description SEPARATOR '; ') AS "item_list"
 FROM SKU_DATA s
-INNER JOIN BUYER b on s.Buyer = b.BuyerName
+INNER JOIN BUYER b ON s.Buyer = b.BuyerName
 GROUP BY b.BuyerName;
