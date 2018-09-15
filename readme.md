@@ -12,9 +12,9 @@ The containers are now running, and can be accessed from the host machine either
 $ docker ps
 $ docker exec -it CONTAINER_ID /bin/bash
 ```
-2. Run your query, piped to an output file for example:
+2. Run your queries, piped to an output file for example:
 ```shell
-$ mysql -uroot -p --table sales < app/HW2/hw2-select.sql > app/HW2/hw2-output.txt
+$ mysql -uroot -p --table --comments sales < app/HW2/hw2-select.sql > app/HW2/hw2-output.txt
 ```
 3. Enter root password.
 4. Output file should be on host machine now.
