@@ -10,6 +10,8 @@ services:
     image: mysql:latest
     ports:
       - "39001:3306"
+    volumes:
+      - ./mysql:/app
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: grant
@@ -23,6 +25,8 @@ services:
     image: postgres:11
     ports:
       - "39002:5432"
+    volumes:
+      - ./postgres:/app
     environment:
       POSTGRES_PASSWORD: root
     networks:
