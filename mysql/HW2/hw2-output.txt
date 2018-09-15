@@ -1,3 +1,15 @@
+[2018-09-15 16:51:15] Connected
+sql> use sales
+[2018-09-15 16:51:15] completed in 4 ms
+
+sql> /*
+     * WHERE EQUALS
+     * Get all 2017 catalog items that went live
+     * on the website on 2017-01-01
+     */
+     SELECT *
+     FROM CATALOG_SKU_2017
+     WHERE DateOnWebSite = '2017-01-01'
 +-----------+--------+-----------------------------+--------------+-------------+---------------+
 | CatalogID | SKU    | SKU_Description             | Department   | CatalogPage | DateOnWebSite |
 +-----------+--------+-----------------------------+--------------+-------------+---------------+
@@ -9,6 +21,16 @@
 |  20170008 | 301000 | Light Fly Climbing Harness  | Climbing     |          77 | 2017-01-01    |
 |  20170009 | 302000 | Locking Carabiner, Oval     | Climbing     |          79 | 2017-01-01    |
 +-----------+--------+-----------------------------+--------------+-------------+---------------+
+[2018-09-15 16:51:15] 7 rows retrieved starting from 1 in 128 ms (execution: 25 ms, fetching: 103 ms)
+
+sql> /*
+     * WHERE NOT EQUALS
+     * Get all order items that have been sold
+     * in a quantity other than 1
+     */
+     SELECT *
+     FROM ORDER_ITEM
+     WHERE Quantity != 1
 +-------------+--------+----------+-------+---------------+
 | OrderNumber | SKU    | Quantity | Price | ExtendedPrice |
 +-------------+--------+----------+-------+---------------+
@@ -16,6 +38,15 @@
 |        2000 | 101200 |        2 | 50.00 |        100.00 |
 |        3000 | 101100 |        2 | 50.00 |        100.00 |
 +-------------+--------+----------+-------+---------------+
+[2018-09-15 16:51:15] 3 rows retrieved starting from 1 in 159 ms (execution: 14 ms, fetching: 145 ms)
+
+sql> /*
+     * ORDER BY
+     * Get all orders sorted by OrderTotal descending
+     */
+     SELECT *
+     FROM RETAIL_ORDER
+     ORDER BY OrderTotal DESC
 +-------------+-------------+----------+------------+-----------+------------+
 | OrderNumber | StoreNumber | StoreZIP | OrderMonth | OrderYear | OrderTotal |
 +-------------+-------------+----------+------------+-----------+------------+
@@ -23,6 +54,16 @@
 |        1000 |          10 | 98110    | December   |      2012 |     445.00 |
 |        2000 |          20 | 02335    | December   |      2012 |     310.00 |
 +-------------+-------------+----------+------------+-----------+------------+
+[2018-09-15 16:51:15] 3 rows retrieved starting from 1 in 129 ms (execution: 23 ms, fetching: 106 ms)
+
+sql> /*
+     * ORDER BY TWO COLUMNS
+     * Get all 2018 catalog items, sorted by
+     * live date on website, then catalog page
+     */
+     SELECT *
+     FROM CATALOG_SKU_2018
+     ORDER BY DateOnWebSite ASC, CatalogPage ASC
 +-----------+--------+---------------------------------+--------------+-------------+---------------+
 | CatalogID | SKU    | SKU_Description                 | Department   | CatalogPage | DateOnWebSite |
 +-----------+--------+---------------------------------+--------------+-------------+---------------+
@@ -36,18 +77,55 @@
 |  20180007 | 203000 | Half-dome Test Vestibule - Wide | Camping      |        NULL | 2018-04-01    |
 |  20180003 | 101100 | Dive Mask, Small Clear          | Water Sports |          27 | 2018-08-01    |
 +-----------+--------+---------------------------------+--------------+-------------+---------------+
+[2018-09-15 16:51:15] 9 rows retrieved starting from 1 in 150 ms (execution: 18 ms, fetching: 132 ms)
+
+sql> /*
+     * GROUPING
+     * All order totals summed by zip code.
+     */
+     SELECT StoreZIP,
+            sum(OrderTotal) AS "order_total"
+     FROM RETAIL_ORDER
+     GROUP BY StoreZIP
 +----------+-------------+
 | StoreZIP | order_total |
 +----------+-------------+
 | 98110    |      925.00 |
 | 02335    |      310.00 |
 +----------+-------------+
+[2018-09-15 16:51:16] 2 rows retrieved starting from 1 in 166 ms (execution: 16 ms, fetching: 150 ms)
+
+sql> /*
+     * GROUP HAVING
+     * See total sales by OrderNumber
+     * Only for Orders greater than $400 in value
+     */
+     SELECT OrderNumber,
+            sum(ExtendedPrice) AS "total_sales"
+     FROM ORDER_ITEM
+     GROUP BY OrderNumber
+     HAVING total_sales > 400
 +-------------+-------------+
 | OrderNumber | total_sales |
 +-------------+-------------+
 |        1000 |      430.00 |
 |        3000 |      450.00 |
 +-------------+-------------+
+[2018-09-15 16:51:16] 2 rows retrieved starting from 1 in 81 ms (execution: 14 ms, fetching: 67 ms)
+
+sql> /*
+     * TWO TABLES
+     * Get SKU and description for Water Sports
+     * items that are included in the 2018 Catalog
+     */
+     SELECT sku.SKU,
+            sku.SKU_Description,
+            sku.Department,
+            cat.CatalogPage,
+            cat.DateOnWebSite
+     FROM CATALOG_SKU_2018 cat
+     INNER JOIN SKU_DATA sku ON cat.SKU = sku.SKU
+     WHERE cat.Department = 'Water Sports'
 +--------+--------------------------+--------------+-------------+---------------+
 | SKU    | SKU_Description          | Department   | CatalogPage | DateOnWebSite |
 +--------+--------------------------+--------------+-------------+---------------+
@@ -56,6 +134,17 @@
 | 101100 | Dive Mask, Small Clear   | Water Sports |          27 | 2018-08-01    |
 | 101200 | Dive Mask, Med Clear     | Water Sports |          27 | 2018-01-01    |
 +--------+--------------------------+--------------+-------------+---------------+
+[2018-09-15 16:51:16] 4 rows retrieved starting from 1 in 112 ms (execution: 15 ms, fetching: 97 ms)
+
+sql> /*
+     * TWO TABLES BY GROUPING
+     * Get all SKUs sold by each buyer in one column
+     */
+     SELECT b.BuyerName,
+            GROUP_CONCAT(s.SKU_Description SEPARATOR '; ') AS "item_list"
+     FROM SKU_DATA s
+     INNER JOIN BUYER b ON s.Buyer = b.BuyerName
+     GROUP BY b.BuyerName
 +--------------+-----------------------------------------------------+
 | BuyerName    | item_list                                           |
 +--------------+-----------------------------------------------------+
@@ -64,3 +153,4 @@
 | Nancy Meyers | Dive Mask, Small Clear; Dive Mask, Med Clear        |
 | Pete Hansen  | Std. Scuba Tank, Yellow; Std. Scuba Tank, Magenta   |
 +--------------+-----------------------------------------------------+
+[2018-09-15 16:51:16] 4 rows retrieved starting from 1 in 96 ms (execution: 11 ms, fetching: 85 ms)
