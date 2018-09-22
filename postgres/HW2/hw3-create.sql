@@ -1,3 +1,5 @@
+DROP SCHEMA IF EXISTS sales CASCADE;
+
 CREATE SCHEMA sales;
 
 SET search_path = "sales";
