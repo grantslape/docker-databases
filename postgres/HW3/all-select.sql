@@ -1,0 +1,17 @@
+SELECT *
+from sales.buyer;
+
+SELECT *
+FROM sales.CATALOG_SKU_2017;
+
+SELECT *
+FROM sales.CATALOG_SKU_2018;
+
+SELECT *
+FROM sales.ORDER_ITEM;
+
+SELECT *
+FROM sales.RETAIL_ORDER;
+
+SELECT *
+FROM sales.SKU_DATA;

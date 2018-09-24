@@ -1,3 +1,8 @@
+Grant Slape
+CS 4332
+Project 3b
+
+
 ********* QUERY **********
 /*
  * CREATE
