@@ -30,7 +30,7 @@ CREATE TABLE shipment_item (
   ShipmentID int not null,
   ShipmentItemID int not null,
   ItemID int not null,
-  `Values` decimal(12,2) not null,
+  `Value` decimal(12,2) not null,
   PRIMARY KEY (ShipmentID, ShipmentItemID),
   CONSTRAINT shipment_itemfk_1 FOREIGN KEY (ShipmentID) REFERENCES shipment(ShipmentID)
   ON UPDATE CASCADE,
