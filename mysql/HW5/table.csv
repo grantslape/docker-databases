@@ -1,0 +1,10 @@
+﻿Patient Number,Patient Name,Patient Address,Surgeon License Number,Surgeon Name,Surgery,Date of Surgery,Postoperative Drug Adminstered,Side Effect of Drug
+1111,John White,"15 New Street, New York, NY",145,Beth Little,Gallstones removal,1985-01-01,Penicillin,Rash
+1111,John White,"15 New Street, New York, NY",311,Michael Diamond,Kidney stones removal,1985-06-12,,
+1234,Mary Jones,"10 Main Street, Rye, NY",243,Charles Field,Eye cataract removal,1984-04-05,Tetracycline,Fever
+1234,Mary Jones,"10 Main Street, Rye, NY",467,Patricia Gold,Thrombosis removal,1985-05-10,,
+2345,Charles Brown,"Dogwood Lane, Harrison, NY",189,David Rosen,Open heart surgery,1986-01-08,Cephalosporin,
+4876,Hal Kane,"55 Boston Post Road, Chester, CT",145,Beth Little,Cholecystectomy,1985-11-05,Demicillin,
+5123,Paul Kosher,"Blind Brook Mamaroneck, NY",145,Beth Little,Gallstones removal,1985-05-10,,
+6845,Ann Hood,"Hilton Road, Larchmont, NY",243,Charles Field,Eye cornea replacement,1984-04-05,Tetracycline,Fever
+6845,Ann Hood,"Hilton Road, Larchmont, NY",243,Charles Field,Eye cataract removal,1984-12-15,,
