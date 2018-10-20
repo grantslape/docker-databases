@@ -1,0 +1,74 @@
+--------------
+drop schema if exists queen_anne
+--------------
+
+Query OK, 4 rows affected (0.13 sec)
+
+--------------
+create schema queen_anne
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+create table customers (
+  CustomerID int not null,
+  FirstName varchar(50) not null,
+  LastName varchar(50) not null,
+  Phone char(12) not null,
+  InvoiceID int not null,
+  InvoiceDate date not null,
+  InvoiceItem varchar(255) not null,
+  Price decimal(15, 2) not null,
+  Tax decimal(15, 2) not null,
+  Total decimal(15, 2) as (Price + Tax) not null,
+  primary key (CustomerID, InvoiceID, InvoiceItem, Price)
+)ENGINE = INNODB
+--------------
+
+Query OK, 0 rows affected (0.02 sec)
+
+--------------
+insert into customers
+(CustomerID, LastName, FirstName, Phone, InvoiceID, InvoiceDate, InvoiceItem, Price, Tax)
+VALUES
+  (1, 'Shire', 'Robert', '206-524-2433', 1, '2017-12-14', 'Antique Desk', 3000, 249),
+  (1, 'Shire', 'Robert', '206-524-2433', 1, '2017-12-14', 'Antique Desk Chair', 500, 41.5),
+  (2, 'Goodyear', 'Katherine', '206-524-3544', 2, '2017-12-15', 'Dining Table Linens', 1000, 83),
+  (3, 'Bancroft', 'Chris', '425-635-9788', 3, '2017-12-15', 'Candles', 50, 4.15),
+  (4, 'Griffith', 'John', '206-524-4655', 4, '2017-12-23', 'Candles', 45, 3.74),
+  (1, 'Shire', 'Robert', '206-524-2433', 5, '2018-01-05', 'Desk Lamp', 250, 20.75),
+  (5, 'Tierney', 'Doris', '425-635-8677', 6, '2018-01-10', 'Dining Table Linens', 750, 62.25),
+  (6, 'Anderson', 'Donna', '360-538-7566', 7, '2018-01-12', 'Book Shelf', 250, 20.75),
+  (2, 'Goodyear', 'Katherine', '206-524-3544', 8, '2018-01-15', 'Antique Chair', 1250, 103.75),
+  (2, 'Goodyear', 'Katherine', '206-524-3544', 8, '2018-01-15', 'Antique Chair', 1750, 145.25),
+  (5, 'Tierney', 'Doris', '425-635-8677', 9, '2018-01-25', 'Antique Candle Holders', 350, 29.05)
+--------------
+
+Query OK, 11 rows affected (0.01 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+--------------
+select *
+from queen_anne.customers
+order by InvoiceDate
+--------------
+
++------------+-----------+----------+--------------+-----------+-------------+------------------------+---------+--------+---------+
+| CustomerID | FirstName | LastName | Phone        | InvoiceID | InvoiceDate | InvoiceItem            | Price   | Tax    | Total   |
++------------+-----------+----------+--------------+-----------+-------------+------------------------+---------+--------+---------+
+|          1 | Robert    | Shire    | 206-524-2433 |         1 | 2017-12-14  | Antique Desk           | 3000.00 | 249.00 | 3249.00 |
+|          1 | Robert    | Shire    | 206-524-2433 |         1 | 2017-12-14  | Antique Desk Chair     |  500.00 |  41.50 |  541.50 |
+|          2 | Katherine | Goodyear | 206-524-3544 |         2 | 2017-12-15  | Dining Table Linens    | 1000.00 |  83.00 | 1083.00 |
+|          3 | Chris     | Bancroft | 425-635-9788 |         3 | 2017-12-15  | Candles                |   50.00 |   4.15 |   54.15 |
+|          4 | John      | Griffith | 206-524-4655 |         4 | 2017-12-23  | Candles                |   45.00 |   3.74 |   48.74 |
+|          1 | Robert    | Shire    | 206-524-2433 |         5 | 2018-01-05  | Desk Lamp              |  250.00 |  20.75 |  270.75 |
+|          5 | Doris     | Tierney  | 425-635-8677 |         6 | 2018-01-10  | Dining Table Linens    |  750.00 |  62.25 |  812.25 |
+|          6 | Donna     | Anderson | 360-538-7566 |         7 | 2018-01-12  | Book Shelf             |  250.00 |  20.75 |  270.75 |
+|          2 | Katherine | Goodyear | 206-524-3544 |         8 | 2018-01-15  | Antique Chair          | 1250.00 | 103.75 | 1353.75 |
+|          2 | Katherine | Goodyear | 206-524-3544 |         8 | 2018-01-15  | Antique Chair          | 1750.00 | 145.25 | 1895.25 |
+|          5 | Doris     | Tierney  | 425-635-8677 |         9 | 2018-01-25  | Antique Candle Holders |  350.00 |  29.05 |  379.05 |
++------------+-----------+----------+--------------+-----------+-------------+------------------------+---------+--------+---------+
+11 rows in set (0.00 sec)
+
+Bye

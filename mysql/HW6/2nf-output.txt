@@ -1,0 +1,109 @@
+--------------
+drop table if exists queen_anne.customers
+--------------
+
+Query OK, 0 rows affected (0.14 sec)
+
+--------------
+create table customers (
+  CustomerID int not null auto_increment,
+  FirstName varchar(50) not null,
+  LastName varchar(50) not null,
+  Phone char(12) not null,
+  PRIMARY KEY (CustomerID)
+)ENGINE = INNODB
+--------------
+
+Query OK, 0 rows affected (0.02 sec)
+
+--------------
+create table invoices (
+  InvoiceID int not null,
+  CustomerID int not null,
+  InvoiceDate date not null,
+  InvoiceItem varchar(255) not null,
+  Price decimal(15, 2) not null,
+  Tax decimal(15, 2) not null,
+  Total decimal(15, 2) as (Price + Tax) not null,
+  primary key (InvoiceID, InvoiceItem, Price),
+  constraint invoicesfk_1 foreign key (CustomerID) references customers(CustomerID)
+)ENGINE = INNODB
+--------------
+
+Query OK, 0 rows affected (0.03 sec)
+
+--------------
+insert into customers
+  (FirstName, LastName, Phone)
+VALUES
+  ('Shire', 'Robert', '206-524-2433'),
+  ('Goodyear', 'Katherine', '206-524-3544'),
+  ('Bancroft', 'Chris', '425-635-9788'),
+  ('Griffith', 'John', '206-524-4655'),
+  ('Tierney', 'Doris', '425-635-8677'),
+  ('Anderson', 'Donna', '360-538-7566')
+--------------
+
+Query OK, 6 rows affected (0.01 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+--------------
+insert into invoices
+  (InvoiceID, CustomerID, InvoiceDate, InvoiceItem, Price, Tax)
+VALUES
+  (1, 1, '2017-12-14', 'Antique Desk', 3000, 249),
+  (1, 1, '2017-12-14', 'Antique Desk Chair', 500, 41.5),
+  (2, 2, '2017-12-15', 'Dining Table Linens', 1000, 83),
+  (3, 3, '2017-12-15', 'Candles', 50, 4.15),
+  (4, 4, '2017-12-23', 'Candles', 45, 3.74),
+  (5, 1, '2018-01-05', 'Desk Lamp', 250, 20.75),
+  (6, 5, '2018-01-10', 'Dining Table Linens', 750, 62.25),
+  (7, 6, '2018-01-12', 'Book Shelf', 250, 20.75),
+  (8, 2, '2018-01-15', 'Antique Chair', 1250, 103.75),
+  (8, 2, '2018-01-15', 'Antique Chair', 1750, 145.25),
+  (9, 5, '2018-01-25', 'Antique Candle Holders', 350, 29.05)
+--------------
+
+Query OK, 11 rows affected (0.00 sec)
+Records: 11  Duplicates: 0  Warnings: 0
+
+--------------
+select *
+from customers
+--------------
+
++------------+-----------+-----------+--------------+
+| CustomerID | FirstName | LastName  | Phone        |
++------------+-----------+-----------+--------------+
+|          1 | Shire     | Robert    | 206-524-2433 |
+|          2 | Goodyear  | Katherine | 206-524-3544 |
+|          3 | Bancroft  | Chris     | 425-635-9788 |
+|          4 | Griffith  | John      | 206-524-4655 |
+|          5 | Tierney   | Doris     | 425-635-8677 |
+|          6 | Anderson  | Donna     | 360-538-7566 |
++------------+-----------+-----------+--------------+
+6 rows in set (0.00 sec)
+
+--------------
+select *
+from invoices
+--------------
+
++-----------+------------+-------------+------------------------+---------+--------+---------+
+| InvoiceID | CustomerID | InvoiceDate | InvoiceItem            | Price   | Tax    | Total   |
++-----------+------------+-------------+------------------------+---------+--------+---------+
+|         1 |          1 | 2017-12-14  | Antique Desk           | 3000.00 | 249.00 | 3249.00 |
+|         1 |          1 | 2017-12-14  | Antique Desk Chair     |  500.00 |  41.50 |  541.50 |
+|         2 |          2 | 2017-12-15  | Dining Table Linens    | 1000.00 |  83.00 | 1083.00 |
+|         3 |          3 | 2017-12-15  | Candles                |   50.00 |   4.15 |   54.15 |
+|         4 |          4 | 2017-12-23  | Candles                |   45.00 |   3.74 |   48.74 |
+|         5 |          1 | 2018-01-05  | Desk Lamp              |  250.00 |  20.75 |  270.75 |
+|         6 |          5 | 2018-01-10  | Dining Table Linens    |  750.00 |  62.25 |  812.25 |
+|         7 |          6 | 2018-01-12  | Book Shelf             |  250.00 |  20.75 |  270.75 |
+|         8 |          2 | 2018-01-15  | Antique Chair          | 1250.00 | 103.75 | 1353.75 |
+|         8 |          2 | 2018-01-15  | Antique Chair          | 1750.00 | 145.25 | 1895.25 |
+|         9 |          5 | 2018-01-25  | Antique Candle Holders |  350.00 |  29.05 |  379.05 |
++-----------+------------+-------------+------------------------+---------+--------+---------+
+11 rows in set (0.00 sec)
+
+Bye

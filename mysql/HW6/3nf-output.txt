@@ -1,0 +1,243 @@
+--------------
+drop table if exists invoices
+--------------
+
+Query OK, 0 rows affected (0.03 sec)
+
+--------------
+drop table if exists queen_anne.customers
+--------------
+
+Query OK, 0 rows affected (0.03 sec)
+
+--------------
+create table customers (
+  CustomerID int not null auto_increment,
+  FirstName varchar(50) not null,
+  LastName varchar(50) not null,
+  Phone char(12) not null,
+  PRIMARY KEY (CustomerID)
+)ENGINE = INNODB
+--------------
+
+Query OK, 0 rows affected (0.02 sec)
+
+--------------
+create table invoices (
+  InvoiceID int not null auto_increment,
+  CustomerID int not null,
+  InvoiceDate date not null,
+  PRIMARY KEY (InvoiceID),
+  constraint invoicesfk_1 foreign key (CustomerID) references customers(CustomerID)
+)ENGINE = INNODB
+--------------
+
+Query OK, 0 rows affected (0.04 sec)
+
+--------------
+create table items (
+  ItemID int not null auto_increment,
+  `Name` varchar(255) not null,
+  PRIMARY KEY (ItemID)
+)ENGINE = INNODB
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+create table invoices_items (
+  InvoiceID int not null,
+  InvoiceItemID int not null,
+  Price decimal(15, 2) not null,
+  Tax decimal(15, 2) as (0.083 * Price) not null,
+  Total decimal(15, 2) as (Price + Tax) not null,
+  constraint invoices_itemsfk_1 foreign key (InvoiceID) references invoices(InvoiceID),
+  constraint invoices_itemsfk_2 foreign key (InvoiceItemID) references items(ItemID)
+)ENGINE = INNODB
+--------------
+
+Query OK, 0 rows affected (0.04 sec)
+
+--------------
+insert into customers
+  (FirstName, LastName, Phone)
+VALUES
+  ('Shire', 'Robert', '206-524-2433'),
+  ('Goodyear', 'Katherine', '206-524-3544'),
+  ('Bancroft', 'Chris', '425-635-9788'),
+  ('Griffith', 'John', '206-524-4655'),
+  ('Tierney', 'Doris', '425-635-8677'),
+  ('Anderson', 'Donna', '360-538-7566')
+--------------
+
+Query OK, 6 rows affected (0.00 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+--------------
+insert into invoices
+  (CustomerID, InvoiceDate)
+VALUES
+  (1, '2017-12-14'),
+  (2, '2017-12-15'),
+  (3, '2017-12-15'),
+  (4, '2017-12-23'),
+  (1, '2018-01-05'),
+  (5, '2018-01-10'),
+  (6, '2018-01-12'),
+  (2, '2018-01-15'),
+  (5, '2018-01-25')
+--------------
+
+Query OK, 9 rows affected (0.01 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+--------------
+insert into items
+  (Name)
+VALUES
+  ('Antique Desk'),
+  ('Antique Desk Chair'),
+  ('Dining Table Linens'),
+  ('Candles'),
+  ('Desk Lamp'),
+  ('Book Shelf'),
+  ('Antique Chair'),
+  ('Antique Candle Holders')
+--------------
+
+Query OK, 8 rows affected (0.00 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+--------------
+insert into invoices_items
+  (InvoiceID, InvoiceItemID, Price)
+VALUES
+  (1, 1, 3000),
+  (1, 2, 500),
+  (2, 3, 1000),
+  (3, 4, 50),
+  (4, 4, 45),
+  (5, 5, 250),
+  (6, 3, 750),
+  (7, 6, 250),
+  (8, 7, 1250),
+  (8, 7, 1750),
+  (9, 8, 350)
+--------------
+
+Query OK, 11 rows affected, 1 warning (0.01 sec)
+Records: 11  Duplicates: 0  Warnings: 1
+
+--------------
+select *
+from queen_anne.customers
+--------------
+
++------------+-----------+-----------+--------------+
+| CustomerID | FirstName | LastName  | Phone        |
++------------+-----------+-----------+--------------+
+|          1 | Shire     | Robert    | 206-524-2433 |
+|          2 | Goodyear  | Katherine | 206-524-3544 |
+|          3 | Bancroft  | Chris     | 425-635-9788 |
+|          4 | Griffith  | John      | 206-524-4655 |
+|          5 | Tierney   | Doris     | 425-635-8677 |
+|          6 | Anderson  | Donna     | 360-538-7566 |
++------------+-----------+-----------+--------------+
+6 rows in set (0.00 sec)
+
+--------------
+select *
+from queen_anne.invoices
+--------------
+
++-----------+------------+-------------+
+| InvoiceID | CustomerID | InvoiceDate |
++-----------+------------+-------------+
+|         1 |          1 | 2017-12-14  |
+|         2 |          2 | 2017-12-15  |
+|         3 |          3 | 2017-12-15  |
+|         4 |          4 | 2017-12-23  |
+|         5 |          1 | 2018-01-05  |
+|         6 |          5 | 2018-01-10  |
+|         7 |          6 | 2018-01-12  |
+|         8 |          2 | 2018-01-15  |
+|         9 |          5 | 2018-01-25  |
++-----------+------------+-------------+
+9 rows in set (0.00 sec)
+
+--------------
+select *
+from queen_anne.items
+--------------
+
++--------+------------------------+
+| ItemID | Name                   |
++--------+------------------------+
+|      1 | Antique Desk           |
+|      2 | Antique Desk Chair     |
+|      3 | Dining Table Linens    |
+|      4 | Candles                |
+|      5 | Desk Lamp              |
+|      6 | Book Shelf             |
+|      7 | Antique Chair          |
+|      8 | Antique Candle Holders |
++--------+------------------------+
+8 rows in set (0.00 sec)
+
+--------------
+select *
+from queen_anne.invoices_items
+--------------
+
++-----------+---------------+---------+--------+---------+
+| InvoiceID | InvoiceItemID | Price   | Tax    | Total   |
++-----------+---------------+---------+--------+---------+
+|         1 |             1 | 3000.00 | 249.00 | 3249.00 |
+|         1 |             2 |  500.00 |  41.50 |  541.50 |
+|         2 |             3 | 1000.00 |  83.00 | 1083.00 |
+|         3 |             4 |   50.00 |   4.15 |   54.15 |
+|         4 |             4 |   45.00 |   3.74 |   48.74 |
+|         5 |             5 |  250.00 |  20.75 |  270.75 |
+|         6 |             3 |  750.00 |  62.25 |  812.25 |
+|         7 |             6 |  250.00 |  20.75 |  270.75 |
+|         8 |             7 | 1250.00 | 103.75 | 1353.75 |
+|         8 |             7 | 1750.00 | 145.25 | 1895.25 |
+|         9 |             8 |  350.00 |  29.05 |  379.05 |
++-----------+---------------+---------+--------+---------+
+11 rows in set (0.00 sec)
+
+--------------
+select
+  LastName,
+  FirstName,
+  Phone,
+  InvoiceDate,
+  `Name`,
+  Price,
+  Tax,
+  Total
+from queen_anne.customers c
+join queen_anne.invoices i on c.CustomerID = i.CustomerID
+join invoices_items item on i.InvoiceID = item.InvoiceID
+join items i2 on item.InvoiceItemID = i2.ItemID
+order by InvoiceDate
+--------------
+
++-----------+-----------+--------------+-------------+------------------------+---------+--------+---------+
+| LastName  | FirstName | Phone        | InvoiceDate | Name                   | Price   | Tax    | Total   |
++-----------+-----------+--------------+-------------+------------------------+---------+--------+---------+
+| Robert    | Shire     | 206-524-2433 | 2017-12-14  | Antique Desk           | 3000.00 | 249.00 | 3249.00 |
+| Robert    | Shire     | 206-524-2433 | 2017-12-14  | Antique Desk Chair     |  500.00 |  41.50 |  541.50 |
+| Katherine | Goodyear  | 206-524-3544 | 2017-12-15  | Dining Table Linens    | 1000.00 |  83.00 | 1083.00 |
+| Chris     | Bancroft  | 425-635-9788 | 2017-12-15  | Candles                |   50.00 |   4.15 |   54.15 |
+| John      | Griffith  | 206-524-4655 | 2017-12-23  | Candles                |   45.00 |   3.74 |   48.74 |
+| Robert    | Shire     | 206-524-2433 | 2018-01-05  | Desk Lamp              |  250.00 |  20.75 |  270.75 |
+| Doris     | Tierney   | 425-635-8677 | 2018-01-10  | Dining Table Linens    |  750.00 |  62.25 |  812.25 |
+| Donna     | Anderson  | 360-538-7566 | 2018-01-12  | Book Shelf             |  250.00 |  20.75 |  270.75 |
+| Katherine | Goodyear  | 206-524-3544 | 2018-01-15  | Antique Chair          | 1250.00 | 103.75 | 1353.75 |
+| Katherine | Goodyear  | 206-524-3544 | 2018-01-15  | Antique Chair          | 1750.00 | 145.25 | 1895.25 |
+| Doris     | Tierney   | 425-635-8677 | 2018-01-25  | Antique Candle Holders |  350.00 |  29.05 |  379.05 |
++-----------+-----------+--------------+-------------+------------------------+---------+--------+---------+
+11 rows in set (0.00 sec)
+
+Bye
