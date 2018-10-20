@@ -1,0 +1,189 @@
+Grant H Slape
+CS 4332
+Project 4b
+MySQL
+
+--------------
+/*
+ * List all shipments greater than
+ * $17,000 in value
+ */
+select *
+from morgan_importing.shipment s
+where InsuredValue > 17000
+--------------
+
++------------+---------------+----------------------+---------------+-------------+--------------+
+| ShipmentID | ShipperName   | ShipperInvoiceNumber | DepartureDate | ArrivalDate | InsuredValue |
++------------+---------------+----------------------+---------------+-------------+--------------+
+|          3 | Worldwide     |             49100300 | 2018-05-05    | 2018-06-17  |     20000.00 |
+|          4 | International |               399400 | 2018-06-02    | 2018-07-17  |     17500.00 |
+|          5 | Worldwide     |             84899440 | 2018-07-10    | 2018-07-28  |     25000.00 |
+|          6 | International |               488955 | 2018-08-05    | 2018-09-11  |     18000.00 |
++------------+---------------+----------------------+---------------+-------------+--------------+
+4 rows in set (0.00 sec)
+
+--------------
+/* Human readable
+ * By item list of all shipment items
+ */
+select
+  s.ShipperName,
+  s.ShipmentID,
+  i.Description,
+  i.Quantity,
+  si.Value,
+  i.LocalCurrencyAmount,
+  s.InsuredValue
+from morgan_importing.shipment_item si
+join morgan_importing.shipment s on si.ShipmentID = s.ShipmentID
+join morgan_importing.item i on si.ItemID = i.ItemID
+--------------
+
++---------------+------------+-----------------------+----------+----------+---------------------+--------------+
+| ShipperName   | ShipmentID | Description           | Quantity | Value    | LocalCurrencyAmount | InsuredValue |
++---------------+------------+-----------------------+----------+----------+---------------------+--------------+
+| Worldwide     |          3 | QE Dining Set         |        2 | 15000.00 |           403405.00 |     20000.00 |
+| International |          4 | Brass Lamps           |       40 |  1200.00 |               50.00 |     17500.00 |
+| International |          4 | Large Bureau          |        8 |  9500.00 |             2000.00 |     17500.00 |
+| International |          4 | Willow Serving Dishes |       75 |  4500.00 |              102.00 |     17500.00 |
++---------------+------------+-----------------------+----------+----------+---------------------+--------------+
+4 rows in set (0.00 sec)
+
+--------------
+/* All shippers who's names start with AB
+ * #D from book
+ */
+select
+  ShipmentID,
+  ShipperName,
+  ShipperInvoiceNumber
+from morgan_importing.shipment
+where ShipperName like 'ab%'
+--------------
+
++------------+-------------------+----------------------+
+| ShipmentID | ShipperName       | ShipperInvoiceNumber |
++------------+-------------------+----------------------+
+|          1 | ABC Trans-Oceanic |              2017651 |
+|          2 | ABC Trans-Oceanic |              2018012 |
++------------+-------------------+----------------------+
+2 rows in set (0.00 sec)
+
+--------------
+/*
+ * # E from book
+ * Shipments that departed in December
+ */
+select
+  ShipmentID,
+  ShipperName,
+  ShipperInvoiceNumber,
+  ArrivalDate
+FROM morgan_importing.shipment
+where month(DepartureDate) = 12
+--------------
+
++------------+-------------------+----------------------+-------------+
+| ShipmentID | ShipperName       | ShipperInvoiceNumber | ArrivalDate |
++------------+-------------------+----------------------+-------------+
+|          1 | ABC Trans-Oceanic |              2017651 | 2018-03-15  |
++------------+-------------------+----------------------+-------------+
+1 row in set (0.00 sec)
+
+--------------
+/*
+ * #F from book
+ * Shipments that departed on the 10th of
+ * any month
+ */
+select
+  ShipmentID,
+  ShipperName,
+  ShipperInvoiceNumber,
+  ArrivalDate
+FROM morgan_importing.shipment
+where day(DepartureDate) = 10
+--------------
+
++------------+-------------------+----------------------+-------------+
+| ShipmentID | ShipperName       | ShipperInvoiceNumber | ArrivalDate |
++------------+-------------------+----------------------+-------------+
+|          1 | ABC Trans-Oceanic |              2017651 | 2018-03-15  |
+|          2 | ABC Trans-Oceanic |              2018012 | 2018-03-20  |
+|          5 | Worldwide         |             84899440 | 2018-07-28  |
++------------+-------------------+----------------------+-------------+
+3 rows in set (0.00 sec)
+
+--------------
+/* #S from book.
+ * non-Singapore orders first by shipper name asc and departure date desc
+ * then Singapore sorted by value asc
+ */
+select
+  s.ShipperName,
+  s.ShipmentID,
+  s.DepartureDate,
+  si.Value
+from morgan_importing.shipment s
+left join morgan_importing.shipment_item si on s.ShipmentID = si.ShipmentID
+left join morgan_importing.item i on si.ItemID = i.ItemID AND i.City = 'Singapore'
+order by `Value`, ShipperName, DepartureDate desc
+--------------
+
++-------------------+------------+---------------+----------+
+| ShipperName       | ShipmentID | DepartureDate | Value    |
++-------------------+------------+---------------+----------+
+| ABC Trans-Oceanic |          2 | 2018-01-10    |     NULL |
+| ABC Trans-Oceanic |          1 | 2017-12-10    |     NULL |
+| International     |          6 | 2018-08-05    |     NULL |
+| Worldwide         |          5 | 2018-07-10    |     NULL |
+| International     |          4 | 2018-06-02    |  1200.00 |
+| International     |          4 | 2018-06-02    |  4500.00 |
+| International     |          4 | 2018-06-02    |  9500.00 |
+| Worldwide         |          3 | 2018-05-05    | 15000.00 |
++-------------------+------------+---------------+----------+
+8 rows in set (0.01 sec)
+
+--------------
+/* #N from book
+ * All shipments >=1000 in value
+ * sorted by name asc, departure desc
+ */
+select
+  ShipperName,
+  s.ShipmentID,
+  DepartureDate
+from morgan_importing.shipment s
+join morgan_importing.shipment_item si on s.ShipmentID = si.ShipmentID
+where si.Value >= 1000
+order by ShipperName, DepartureDate desc
+--------------
+
++---------------+------------+---------------+
+| ShipperName   | ShipmentID | DepartureDate |
++---------------+------------+---------------+
+| International |          4 | 2018-06-02    |
+| International |          4 | 2018-06-02    |
+| International |          4 | 2018-06-02    |
+| Worldwide     |          3 | 2018-05-05    |
++---------------+------------+---------------+
+4 rows in set (0.00 sec)
+
+--------------
+/* #H from book
+ * Average insured value of all shipments
+ */
+select
+  round(avg(InsuredValue), 2) average
+from morgan_importing.shipment
+--------------
+
++----------+
+| average  |
++----------+
+| 17916.67 |
++----------+
+1 row in set (0.00 sec)
+
+Bye
