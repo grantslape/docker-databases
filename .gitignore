@@ -1,2 +1,6 @@
 *.pdf
 .DS_Store/
+mysql/.DS_Store
+postgres/.DS_Store
+*.doc
+*.docx
