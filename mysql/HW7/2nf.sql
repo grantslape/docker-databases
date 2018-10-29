@@ -23,7 +23,7 @@ create table surgeries (
   surgeon_id int not null,
   surgery varchar(255) not null,
   surgery_date date not null,
-  drug varchar(50) not null,
+  drug varchar(50),
   side_effect varchar(100),
   primary key (surgery_id),
   constraint surgeriesfk_1 foreign key (patient_id) references patients(patient_id),
@@ -50,7 +50,7 @@ values
 (189, 'David Rosen');
 
 insert into hospital.surgeries
-(patient_id, surgeon_id, surgery_date, surgery, drug, side_effect)
+(patient_id, surgeon_id, surgery, surgery_date, drug, side_effect)
 values
 (1111, 145, 'Gallstones removal', '1985-01-01', 'Penicillin', 'Rash'),
 (1111, 311, 'Kidney Stones removal', '1985-06-12', null, null),
