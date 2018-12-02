@@ -1,0 +1,234 @@
+--------------
+/*
+ * Total sugeries by surgeon descending
+ */
+select s.name, count(*) as "surgery_total"
+from surgeries
+join surgeons s on surgeries.surgeon_id = s.surgeon_id
+group by s.surgeon_id
+order by count(*) desc
+--------------
+
++-----------------+---------------+
+| name            | surgery_total |
++-----------------+---------------+
+| Beth Little     |             3 |
+| Charles Field   |             3 |
+| David Rosen     |             1 |
+| Michael Diamond |             1 |
+| Patricia Gold   |             1 |
++-----------------+---------------+
+5 rows in set (0.01 sec)
+
+--------------
+/*
+ * Patients who had surgeries in 1985
+ * and the surgery they had
+ */
+select
+  distinct patients.patient_id,
+  patients.name,
+  group_concat(s.surgery separator ', ') as "surgeries"
+from patients
+join surgeries s on patients.patient_id = s.patient_id
+where year(surgery_date) = '1985'
+group by patients.patient_id
+--------------
+
++------------+-------------+-------------------------------------------+
+| patient_id | name        | surgeries                                 |
++------------+-------------+-------------------------------------------+
+|       1111 | John White  | Gallstones removal, Kidney Stones removal |
+|       1234 | Mary Jones  | Thrombosis removal                        |
+|       4876 | Hal Kane    | Cholecystectomy                           |
+|       5123 | Paul Kosher | Gallstones removal                        |
++------------+-------------+-------------------------------------------+
+4 rows in set (0.00 sec)
+
+--------------
+/*
+ * Average surgeries per patient
+ */
+select avg(b.count_by_patient)
+from
+  (
+  select p.patient_id, count(*) as count_by_patient
+  from surgeries s
+  join patients p on s.patient_id = p.patient_id
+  group by p.patient_id
+  ) b
+--------------
+
++-------------------------+
+| avg(b.count_by_patient) |
++-------------------------+
+|                  1.5000 |
++-------------------------+
+1 row in set (0.00 sec)
+
+--------------
+/*
+ * Surgeries per year
+ */
+select
+  year(su.surgery_date) as `year`,
+  count(*)
+from surgeries su
+group by `year`
+order by `year`
+--------------
+
++------+----------+
+| year | count(*) |
++------+----------+
+| 1984 |        3 |
+| 1985 |        5 |
+| 1986 |        1 |
++------+----------+
+3 rows in set (0.00 sec)
+
+--------------
+/*
+ * Surgeries per month
+ */
+select
+  monthname(su.surgery_date) as `month`,
+  count(*)
+from surgeries su
+group by `month`
+order by count(*) desc
+--------------
+
++----------+----------+
+| month    | count(*) |
++----------+----------+
+| January  |        2 |
+| April    |        2 |
+| May      |        2 |
+| June     |        1 |
+| November |        1 |
+| December |        1 |
++----------+----------+
+6 rows in set (0.00 sec)
+
+--------------
+/*
+ * total # of drug prescriptions per year
+ */
+select
+  year(su.surgery_date) as `year`,
+  count(*),
+  group_concat(drugs.name separator ', ')
+from surgeries su
+join drugs on su.drug_id = drugs.drug_id
+where su.drug_id is not null
+group by `year`
+order by `year`
+--------------
+
++------+----------+-----------------------------------------+
+| year | count(*) | group_concat(drugs.name separator ', ') |
++------+----------+-----------------------------------------+
+| 1984 |        2 | Tetracycline, Tetracycline              |
+| 1985 |        2 | Penicillin, Demicillin                  |
+| 1986 |        1 | Cephalosporin                           |
++------+----------+-----------------------------------------+
+3 rows in set (0.00 sec)
+
+--------------
+/*
+ * Patients and distinct surgeons they've seen
+ */
+select
+  p.name as "patient name",
+  group_concat(distinct s.name separator ', ') as surgeons
+from patients p
+join surgeries su on p.patient_id = su.patient_id
+join surgeons s on su.surgeon_id = s.surgeon_id
+group by p.patient_id
+order by p.patient_id desc
+--------------
+
++---------------+------------------------------+
+| patient name  | surgeons                     |
++---------------+------------------------------+
+| Ann Hood      | Charles Field                |
+| Paul Kosher   | Beth Little                  |
+| Hal Kane      | Beth Little                  |
+| Charles Brown | David Rosen                  |
+| Mary Jones    | Charles Field, Patricia Gold |
+| John White    | Beth Little, Michael Diamond |
++---------------+------------------------------+
+6 rows in set (0.00 sec)
+
+--------------
+/*
+ * Drugs prescribed by surgeon
+ */
+select
+  s.name,
+  d.name,
+  count(*)
+from surgeries su
+join surgeons s on su.surgeon_id = s.surgeon_id
+join drugs d on su.drug_id = d.drug_id
+group by s.surgeon_id, d.drug_id
+order by count(*) desc, s.surgeon_id asc
+--------------
+
++---------------+---------------+----------+
+| name          | name          | count(*) |
++---------------+---------------+----------+
+| Charles Field | Tetracycline  |        2 |
+| Beth Little   | Penicillin    |        1 |
+| Beth Little   | Demicillin    |        1 |
+| David Rosen   | Cephalosporin |        1 |
++---------------+---------------+----------+
+4 rows in set (0.00 sec)
+
+--------------
+/*
+ * Surgeries and the drugs administered for them
+ */
+select
+  su.surgery,
+  group_concat(d.name separator ', ')
+from surgeries su
+left join drugs d on su.drug_id = d.drug_id
+group by su.surgery
+--------------
+
++------------------------+-------------------------------------+
+| surgery                | group_concat(d.name separator ', ') |
++------------------------+-------------------------------------+
+| Cholecystectomy        | Demicillin                          |
+| Eye cataract removal   | Tetracycline                        |
+| Eye cornea replacement | Tetracycline                        |
+| Gallstones removal     | Penicillin                          |
+| Kidney Stones removal  | NULL                                |
+| Open heart surgery     | Cephalosporin                       |
+| Thrombosis removal     | NULL                                |
++------------------------+-------------------------------------+
+7 rows in set (0.00 sec)
+
+--------------
+/*
+ * Bad batch of prescriptions in 01/1985
+ * Which patients were affected?
+ */
+select
+  p.*
+from patients p
+join surgeries s on p.patient_id = s.patient_id
+where month(s.surgery_date) = '1'
+and year(s.surgery_date) = '1985'
+--------------
+
++------------+------------+-----------------------------+
+| patient_id | name       | address                     |
++------------+------------+-----------------------------+
+|       1111 | John White | 15 New Street, New York, NY |
++------------+------------+-----------------------------+
+1 row in set (0.00 sec)
+
+Bye

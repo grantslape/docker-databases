@@ -1,3 +1,4 @@
+use sales;
 /*
  * WHERE EQUALS
  * Get all 2017 catalog items that went live

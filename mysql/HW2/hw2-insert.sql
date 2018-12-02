@@ -1,3 +1,5 @@
+use sales;
+
 INSERT INTO CATALOG_SKU_2017
     (CatalogID, SKU, SKU_Description, Department, CatalogPage, DateOnWebSite)
 VALUES (20170001, 100100, 'Std. Scuba Tank, Yellow', 'Water Sports', 23, '2017-01-01'),

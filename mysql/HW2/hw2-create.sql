@@ -1,3 +1,7 @@
+create schema if not exists sales;
+
+use sales;
+
 CREATE TABLE CATALOG_SKU_2017 (
   CatalogID int not null,
   SKU int not null,
